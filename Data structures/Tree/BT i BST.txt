@@ -1,0 +1,147 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    Node* left;
+    Node* right;
+    int val;
+
+    Node() {
+        val=INT_MAX;
+        left=nullptr;
+        right=nullptr;
+    }
+    Node(int v) {
+        val=v;
+        left=nullptr;
+        right=nullptr;
+
+    }
+    void insert(int val) {
+        if (this->val==INT_MAX) {
+            this->val=val;
+            return;
+        }
+
+        if (val < this->val) {
+            if (this->left==nullptr) {
+                this->left=new Node(val);
+                return;
+            }
+            this->left->insert(val);
+        }
+        else {
+            if (this->right==nullptr) {
+                this->right=new Node(val);
+                return;
+            }
+            this->right->insert(val);
+        }
+    }
+    void btinsert(int val) {
+        if (this->val==INT_MAX) {
+            this->val=val;
+            return;
+        }
+        queue<Node*> q;
+        q.push(this);
+        while (!q.empty()) {
+            Node* cur=q.front();
+            q.pop();
+            if (cur->left!=nullptr) {
+                q.push(cur->left);
+            }else if (cur->left==nullptr) {
+                cur->left=new Node(val);
+                return;
+            }
+
+            if (cur->right!=nullptr) {
+                q.push(cur->right);
+            }else if (cur->right==nullptr) {
+                cur->right=new Node(val);
+                return;
+            }
+        }
+    }
+
+    void bfs() {
+        queue<Node*> q;
+        q.push(this);
+
+        while (!q.empty()) {
+            Node* cur=q.front();
+            q.pop();
+            cout<<cur->val<<endl;
+            if (cur->left!=nullptr) {
+                q.push(cur->left);
+            }
+            if (cur->right!=nullptr) {
+                q.push(cur->right);
+            }
+        }
+    }
+    void dfspreorder() {
+        stack<Node*> q;
+        q.push(this);
+
+        while (!q.empty()) {
+            Node* cur=q.top();
+            q.pop();
+            cout<<cur->val<<endl;
+            if (cur->right!=nullptr) {
+                q.push(cur->right);
+            }
+            if (cur->left!=nullptr) {
+                q.push(cur->left);
+            }
+        }
+    }
+    void dfs_preorder() {
+        cout<<this->val<<endl;
+        if (left) this->left->dfs_preorder();
+        if (right) this->right->dfs_preorder();
+    }
+    void dfs_inorder() {
+        if (left) this->left->dfs_inorder();
+        cout<<this->val<<endl;
+        if (right) this->right->dfs_inorder();
+    }
+    void dfs_postorder() {
+        if (left) this->left->dfs_postorder();
+        if (right) this->right->dfs_postorder();
+        cout<<this->val<<endl;
+    }
+
+    void dfsinorder() {
+        Node* cur=this;
+        stack<Node*> q;
+        while (!q.empty() || cur) {
+                while (cur) {
+                    q.push(cur);
+                    cur=cur->left;
+                }
+            cur=q.top();
+            cout<<cur->val;
+            q.pop();
+            cur=cur->right;
+        }
+    }
+};
+
+
+
+int main() {
+    Node root;
+    for (int i=1;i<=7;i++) {
+        root.btinsert(i);
+    }
+    cout<<"BFS:";
+    root.bfs();
+    cout<<"DFS:";
+    root.dfs_preorder();
+    cout<<"*";
+    root.dfs_inorder();
+    cout<<"*";
+    root.dfs_postorder();
+
+}
